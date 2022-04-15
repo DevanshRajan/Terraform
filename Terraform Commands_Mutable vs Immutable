@@ -1,0 +1,42 @@
+Mutalble
+
+A1 1.7-->1.8-->1.9
+A2 1.7-->1.8-->1.9
+A3 1.7-->1.8
+
+Configuration Drift
+
+Immutable infra->new server provisioned
+less chance of configuration drift
+
+By default terraform destroys the infra first and creates it.
+
+----------------------------------------------
+
+Life Cycle Rules:
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = "/root/pets.txt"
+  content         = "we love pets"
+  file_permission = "0700"
+  
+  lifecycle{
+  create_before_destroy = true 
+  }
+}
+
+#prevent_destroy: if we dont want to destroy the resource at all
+prevent_destroy = true
+
+#ignore_changes=true
+
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = "/root/pets.txt"
+  content         = "we love pets"
+  file_permission = "0700"
+  
+  lifecycle{
+  ignore_changes = [filename,content] 
+  }
+}
