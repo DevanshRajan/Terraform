@@ -1,0 +1,33 @@
+#to check sysntax used is correct on not
+terraform validate 
+
+# to format the terraform file
+terraform fmt 
+
+# displays current state of infra as seen by terraform
+terraform show
+
+#to cobert it to json format
+terraform show -json 
+
+#to see list of all providers used in configuration directory
+terraform providers
+
+#copy plugins to another directory
+terraform providers mirror /root/terraform/new_local_file
+
+#print all output variable in directory
+terraform output
+terraform output pet_name
+
+#sync terraform with real world infra, if any changes made to terraform outside its control such as manual update , terraform refresh will pick it up and update 
+the state file. This command will not modify infra but will modify state file
+Also executed below plan and apply
+
+terrafrom refresh
+
+
+# to show dependencies in graphical manner
+apt install graphviz -y
+terraform graph| dot -Tsvg > graph.svg
+
