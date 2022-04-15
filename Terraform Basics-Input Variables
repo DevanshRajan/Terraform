@@ -200,3 +200,20 @@ root@TerraformManager:/opt/terraform_hcl#
 -rwx------ 1 root root   13 Apr 15 06:23 pets.txt
 root@TerraformManager:~# cat pets.txt
 We love pets!root@TerraformManager:~#
+
+
+---------------------Code-----------------------
+variable.tf---->
+variable ami{
+default = "ami-01234567890"
+}
+
+variable "instance_type"{
+default = "t2.micro"
+}
+
+main.tf------>
+resource "aws_instance" "webserver"{
+ami = var.ami
+instance_type = var.instance_type
+}
