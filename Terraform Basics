@@ -1,0 +1,62 @@
+It's good to create a single terraform file with multiple resourse config:
+
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = "/root/pets.txt"
+  content         = "we love pets"
+  file_permission = "0700"
+}
+resource "local_file" "cats" {
+  filename = "/root/cats.txt"
+  content  = "we love cats"
+}
+
+main.tf: main configuration file containing resource configuration
+variables.tf: Contains variable definition
+outputs.tf: Contains outputs from resources
+provider.tf: contains provider definition 
+
+----------------------------------
+Multiple providers:
+
+
+Random provider-->
+The "random" provider allows the use of randomness within Terraform configurations. This is a logical provider, which means that it works entirely within Terraform's
+logic, and doesn't interact with any other services.
+
+
+root@TerraformManager:/opt/terraform_hcl# vi main.tf
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = "/root/pets.txt"
+  content         = "we love pets"
+  file_permission = "0700"
+}
+resource "local_file" "cats" {
+  filename = "/root/cats.txt"
+  content  = "we love cats"
+}
+
+resource "random_pet" "animal"{
+prefix = "Mr. "
+separator = "."
+length = 1
+}
+
+root@TerraformManager:/opt/terraform_hcl# terraform init
+
+Initializing the backend...
+
+Initializing provider plugins...
+- Finding latest version of hashicorp/random...
+- Reusing previous version of hashicorp/local from the dependency lock file
+- Installing hashicorp/random v3.1.2...
+- Installed hashicorp/random v3.1.2 (signed by HashiCorp)
+- Using previously-installed hashicorp/local v2.2.2
+
+Terraform has made some changes to the provider dependency selections recorded
+in the .terraform.lock.hcl file. Review those changes and commit them to your
+version control system if they represent changes you intended to make.
+
+Terraform has been successfully initialized!
+
