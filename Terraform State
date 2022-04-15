@@ -1,0 +1,26 @@
+terraform.tfstate
+Whihch will get create as consequence of terraform apply command
+
+json data structure which maps real world infra resources to resource defn in configuration file.
+consider as single source of truth for terraform plan and apply command
+
+-----------------------------------------------
+Purpose of state
+--> It can be considered as a blueprint of all the resources that are manage out there in real world
+--> In case of removing both dependent blocks from main.tf , terraform apply command relies on metadat available in terraform state file and perform destroy as per order
+--> terraform plan --refresh=false
+The -refresh=false option is used in normal planning mode to skip the default behavior of refreshing Terraform state before checking for configuration changes.
+
+-----------------------------------------------
+
+Recommended to store state file in remote data store , rather than to rely on local copy 
+
+-----------------------------------------------
+
+Terraform state consideration:
+Its a single source of truth for Terraform to understand what is deployed in real world.
+State is a non optional feature in terraform
+It strore sensitive information like ip add, ssh key pair or pwds so should be store in a secure storage
+tfstate file should be Stored in S3 or terraform cloud
+main.tf can be stored in VCS
+Not recommended to make changes manually in tfstate file however sometime there will be situation we have to do that in that case will rely on state commands.
