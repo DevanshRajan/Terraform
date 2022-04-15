@@ -1,0 +1,82 @@
+Variable block:
+
+variable "filename"{
+default = "/root/pets.txt"
+type = dtring
+description = "teh path of local file"
+}
+
+Type of variable:
+
+string= "/root/pets.txt"
+number=1
+bool=true/false
+any=default value
+list=["cat","dog"]
+  default = ["Mr","Mrs","Sir"]
+  how to call-->car.prefix[0]
+----------------------------------------------------------  
+
+list= sequence of same variable type
+
+
+map=(Key value pair)
+Example:
+variable "file_content" "map"{
+type = map
+default = {
+"pet1" = "cat"
+"pet2" = "dog"
+}
+}
+
+How to call: var.file_content["pet1"]
+----------------------------------------------------------
+Use type constraint to make sure that teh value of map are of specific type
+
+
+variable "pet_count" {
+default = {
+"dogs" = 1
+"cats" = 2
+"fish" = 3
+
+type = map(number)
+}
+}
+-------------------------------------------------------
+
+Set is similar to list , only difference it can not have duplicate element :
+
+variable "prefix"{
+default = ["Mr","Mrs","Sir"]
+type = set(string)
+}
+-------------------------------------------------------
+object= Complex data structure
+
+variable "student"{
+type = object(
+{
+name = string
+id= number
+food = list(str)
+age = number
+})
+
+default = {
+name = "Tota"
+id = 123
+food = ["fish" , "chicken"]
+age = 10
+}
+}
+
+--------------------------------------------------
+tuple= Complex data structure
+sequence of different variable type
+
+variable "kitty"{
+type = tuple([string,number,bool])
+default = ["cat",7,true]
+}
