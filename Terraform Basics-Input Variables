@@ -1,2 +1,202 @@
 Terraform Basics-Input Variables:
 
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = "/root/pets.txt"
+  content         = "we love pets"
+  file_permission = "0700"
+}
+
+resource "random_pet" "animal"{
+prefix = "Mr. "
+separator = "."
+length = 1
+}
+
+
+
+-----------------After Using Variable---------------
+root@TerraformManager:/opt/terraform_hcl#
+root@TerraformManager:/opt/terraform_hcl#
+root@TerraformManager:/opt/terraform_hcl#
+root@TerraformManager:/opt/terraform_hcl# cat main.tf
+resource "local_file" "pets" {
+  filename        = var.filename
+  content         = var.content
+  file_permission = "0700"
+}
+
+resource "random_pet" "animal" {
+  prefix    = var.prefix
+  separator = var.separator
+  length    = var.length
+}
+root@TerraformManager:/opt/terraform_hcl# cat variables.tf
+
+variable "filename" {
+  default = "/root/pets.txt"
+}
+variable "content" {
+
+  default = "We love pets!"
+}
+variable "prefix" {
+
+  default = "Mrs."
+}
+variable "separator" {
+
+  default = "."
+}
+
+variable "length" {
+
+  default = "2"
+}
+
+root@TerraformManager:/opt/terraform_hcl# terraform fmt
+root@TerraformManager:/opt/terraform_hcl# terraform plan
+random_pet.animal: Refreshing state... [id=Mr. .ibex]
+local_file.pets: Refreshing state... [id=d87a5018d4e1c1e1644d11eafcdf53a95c8968ef]
+local_file.cats: Refreshing state... [id=ddef892eac699c98f57c580cdf47217c5869d570]
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the last "terraform apply":
+
+  # local_file.cats has been deleted
+  - resource "local_file" "cats" {
+      - content              = "we love cats" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0777" -> null
+      - filename             = "/root/cats.txt" -> null
+      - id                   = "ddef892eac699c98f57c580cdf47217c5869d570" -> null
+    }
+
+  # local_file.pets has been deleted
+  - resource "local_file" "pets" {
+      - content              = "we love pets" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0700" -> null
+      - filename             = "/root/pets.txt" -> null
+      - id                   = "d87a5018d4e1c1e1644d11eafcdf53a95c8968ef" -> null
+    }
+
+
+Unless you have made equivalent changes to your configuration, or ignored the relevant attributes using ignore_changes,
+the following plan may include actions to undo or respond to these changes.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the
+following symbols:
+  + create
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # local_file.pets will be created
+  + resource "local_file" "pets" {
+      + content              = "We love pets!"
+      + directory_permission = "0777"
+      + file_permission      = "0700"
+      + filename             = "/root/pets.txt"
+      + id                   = (known after apply)
+    }
+
+  # random_pet.animal must be replaced
+-/+ resource "random_pet" "animal" {
+      ~ id        = "Mr. .ibex" -> (known after apply)
+      ~ length    = 1 -> 2 # forces replacement
+      ~ prefix    = "Mr. " -> "Mrs." # forces replacement
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 2 to add, 0 to change, 1 to destroy.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if you
+run "terraform apply" now.
+root@TerraformManager:/opt/terraform_hcl# terraform apply
+local_file.cats: Refreshing state... [id=ddef892eac699c98f57c580cdf47217c5869d570]
+local_file.pets: Refreshing state... [id=d87a5018d4e1c1e1644d11eafcdf53a95c8968ef]
+random_pet.animal: Refreshing state... [id=Mr. .ibex]
+
+Note: Objects have changed outside of Terraform
+
+Terraform detected the following changes made outside of Terraform since the last "terraform apply":
+
+  # local_file.cats has been deleted
+  - resource "local_file" "cats" {
+      - content              = "we love cats" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0777" -> null
+      - filename             = "/root/cats.txt" -> null
+      - id                   = "ddef892eac699c98f57c580cdf47217c5869d570" -> null
+    }
+
+  # local_file.pets has been deleted
+  - resource "local_file" "pets" {
+      - content              = "we love pets" -> null
+      - directory_permission = "0777" -> null
+      - file_permission      = "0700" -> null
+      - filename             = "/root/pets.txt" -> null
+      - id                   = "d87a5018d4e1c1e1644d11eafcdf53a95c8968ef" -> null
+    }
+
+
+Unless you have made equivalent changes to your configuration, or ignored the relevant attributes using ignore_changes,
+the following plan may include actions to undo or respond to these changes.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the
+following symbols:
+  + create
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # local_file.pets will be created
+  + resource "local_file" "pets" {
+      + content              = "We love pets!"
+      + directory_permission = "0777"
+      + file_permission      = "0700"
+      + filename             = "/root/pets.txt"
+      + id                   = (known after apply)
+    }
+
+  # random_pet.animal must be replaced
+-/+ resource "random_pet" "animal" {
+      ~ id        = "Mr. .ibex" -> (known after apply)
+      ~ length    = 1 -> 2 # forces replacement
+      ~ prefix    = "Mr. " -> "Mrs." # forces replacement
+        # (1 unchanged attribute hidden)
+    }
+
+Plan: 2 to add, 0 to change, 1 to destroy.
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+local_file.pets: Creating...
+local_file.pets: Creation complete after 0s [id=cba595b7d9f94ba1107a46f3f731912d95fb3d2c]
+random_pet.animal: Destroying... [id=Mr. .ibex]
+random_pet.animal: Destruction complete after 0s
+random_pet.animal: Creating...
+random_pet.animal: Creation complete after 0s [id=Mrs..game.shrimp]
+
+Apply complete! Resources: 2 added, 0 changed, 1 destroyed.
+root@TerraformManager:/opt/terraform_hcl#
+root@TerraformManager:/opt/terraform_hcl#
+root@TerraformManager:/opt/terraform_hcl#
+
+
+**********************************
+-rwx------ 1 root root   13 Apr 15 06:23 pets.txt
+root@TerraformManager:~# cat pets.txt
+We love pets!root@TerraformManager:~#
