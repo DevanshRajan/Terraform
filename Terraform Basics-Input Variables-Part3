@@ -1,0 +1,34 @@
+If we will provide variable block like below:
+
+variable "filename" {
+
+}
+variable "content"{
+
+}
+
+Now if we will run terraform apply we will be prompted to enter value in interective mode
+
+If we dont want interective mode we can use command line flags like below:
+
+terraform apply -var "filename=/root/pets.txt" -var "content=We love pets!"
+
+-------------------
+We can also make use of environment variables:
+
+export TF_VAR_filename="/root/pet.txt"
+export TF_VAR_content="my fav pet"
+then run terraform apply
+
+--------------------
+Using variable definition files(will be automatically loaded by terraform, can have any name with .tfvars extension)
+
+terraform.tfvars
+filename = "/root/pet.txt"
+content = "my fav pet"
+-----------------------
+Variable precedence
+
+1 Env variable
+2 tfvars
+3 command line(Highest)
