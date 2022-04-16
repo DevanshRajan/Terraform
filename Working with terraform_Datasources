@@ -1,0 +1,124 @@
+Terraform can also read resources manages outside its control
+
+resource "local_file" "pet"{
+filename = "/tmp/pets.txt"
+content = data.localfile.dog.content
+}
+
+data "local_file" "dog"{
+filename = "/tmp/dog.txt"
+}
+
+Resource vs data source:
+
+Resource:
+Keyword Resource
+create update destroy infra
+Also called managed resources
+
+DataSource:
+keyword data
+only reads infra
+also called data resources
+
+-------------------------------------------------------
+
+#!/bin/bash
+for i in {1..3}
+  do
+      touch /root/pet${i}
+  done
+  
+o/p 
+pet1
+pet2
+pet3
+
+Same we can achieve using terraform as well using meta arguments.
+Meta Argument:
+
+1: depends_on
+2: lifecycle
+
+3: Count: Resources are created as list
+
+resource "local_file" "pet" {
+filename = "var.filename[count.index]"
+count = length(var.filename)
+}
+
+variable "filename"{
+default = [
+"/tmp/pet.txt",
+"/tmp/cat.txt",
+"/tmp/dog.txt"
+]
+}
+
+But its not a correct approch because if we remove any variable , remaining 2 will also get destroyed and recreated coz index value is getting changed
+
+-------------
+For_each : only works with map or set
+
+resource "local_file" "pet" {
+filename = each.value
+for_each = var.filename
+}
+
+variable "filename"{
+type = set(string)
+default = [
+"/tmp/pet.txt",
+"/tmp/cat.txt",
+"/tmp/dog.txt"
+]
+}
+
+-------------------using to set function------------
+
+resource "local_file" "pet" {
+filename = each.value
+for_each = toset(var.filename)
+}
+
+variable "filename"{
+default = [
+"/tmp/pet.txt",
+"/tmp/cat.txt",
+"/tmp/dog.txt"
+]
+}
+------------------------------------------------------
+
+Use specific version of provider plugin
+
+Go to official provider terraform page-->select version-->Use provider
+
+terraform {
+  required_providers {
+    local = {
+      source = "hashicorp/local"
+      version = "1.4.0"
+    }
+  }
+}
+
+provider "local" {
+  # Configuration options
+}
+
+Use above block
+
+---------------------------
+if dont want to use specific version:
+version = "!= 1.4.0"
+
+version greater than specific version:
+version = "> 1.4.0"
+
+version combination condition:
+version = "> 1.2.0, <2.0.0, !=1.4.0"
+
+passimistic incremental version(any available version greater than 1.4)
+version = "~> 1.4.0"
+
