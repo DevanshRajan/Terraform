@@ -1,0 +1,54 @@
+IAM Programmatic access:
+1. Download and install AWS ClI
+2. Configure AWS Cli:
+aws configure
+aws_access_key_id = "4321"
+aws_secret_access_key = "1234"
+default region name = "use-est-01"
+defaul output format = json
+
+3. Credentials and configurations will get store in a hidden directory
+cat .aws/config/config
+[default]
+region = us-est-01
+output = json
+
+4. Syntax of AWS CLI:
+aws <command> <subcommand> <options and parameters>
+aws iam create-user --user-name lucy
+
+5. CLI Help:
+aws  iam help
+
+AWS IAM eith Terraform:
+
+provider "aws"{
+region = "use-est-01"
+access_key = "4321"
+secret_key = "1234"
+}
+
+resource "aws_iam_user" "admin_user"{
+name = "Lucy"
+tag = {
+Description = = "Technical Team Leader"
+}
+}
+
+--------------------
+
+Use AWS access and secret key using AWS Cli config file:
+
+.aws/config/credentials
+[default]
+aws_access_key_id = "4321"
+aws_secret_access_key = "1234"
+
+----------------------
+
+3rd way is using env variable:
+
+export aws_access_key_id = "4321"
+export aws_secret_access_key = "1234"
+export aws_region = "us-est-01"
+
