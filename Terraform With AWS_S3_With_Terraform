@@ -1,0 +1,58 @@
+S3:
+Simple storage servoce, 
+High Availability by storing data in multiple devices and multiple regions
+Object based storage 
+Stored in form of bucket
+
+Consideration while creating bucket:
+bucket name should be unique
+name should be dns compliant means no uppercase or underscore 3-63 char and should not end with dash
+file size 0-5tb
+once bucket is created it can be accessed by unique dns name like https://<bucketname>.<region>.amazonaws.com
+
+Any object in s3 bucket consists of an 
+object data(key /value) 
+metadata
+
+By default no one can access the bucket except bucket owner
+Access to bucket and its objects are govern by 
+-->bucket policies (at bucket level)
+--> access control lists (at object level)
+
+with bucket policies provide access to IAM user , group , public access. Can even grant access to users in other accounts
+
+Example: read_object.json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": ["s3:GetObject"],
+      "Resource": ["arn:aws:s3:::all-pets/*"],
+      "Principal": {
+        "AWS": ["arn:aws:iam::12345:user:Lucy"]
+    }
+    }
+  ]
+}
+
+------------------------------------
+S3 Bucket with Terraform
+
+resource "aws_s3_bucket" "finance"{
+
+bucket = "finance_180422"
+tage = {
+Description = "Finance and payroll"
+}
+}
+
+resource "aws_s3_bucket_object" "finance-2020"{
+content = "/root/finance/finance-2020.doc" 
+key = "finance-2020.doc"
+bucket = "aws_s3_bucket.finance.id"
+}
+
+data "aws_iam_group" finance-data{
+group_name="finance_analytics"
+}
