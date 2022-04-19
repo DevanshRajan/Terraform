@@ -1,0 +1,20 @@
+By default tfstate file will get created in config directory by default.
+Benefits of tfstate:
+mapping config to real world
+Tracking matadat
+performance
+Collaboration
+
+
+If local state file and collaboration is not maintained . Also should not save it in VCS and will occure security issue .
+As its recommended only 1 person perform operation on state file at a time
+if both will perform concurrent operation issue will come
+
+Like we perform concurrent operation in local will get below error:
+"Error locking state: Error acquired the state file :Resource temp unavailable"
+
+This feature is called state locking 
+VCS does not allow state locking might cause data and infra loss
+
+
+Recommended to store in remote state backend --S3 , cloud
