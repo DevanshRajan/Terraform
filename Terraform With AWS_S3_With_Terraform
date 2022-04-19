@@ -56,3 +56,10 @@ bucket = "aws_s3_bucket.finance.id"
 data "aws_iam_group" finance-data{
 group_name="finance_analytics"
 }
+
+resource "aws_s3_buckrt_policy" "finance_policy"{
+    
+    bucket = aws_s3_bucket.finance.id
+    policy = file("policy.json")
+    
+    }
