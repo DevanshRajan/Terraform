@@ -1,0 +1,34 @@
+resource "aws_einstance" "webserver" {
+ami_id= "123asdf"
+instance_type = "t2.micro"
+tags = {
+name = "webserver"
+description = "I am used as a webserver!"
+}
+security_group = aws_security_group.web_security.id
+key_name = aws_key_pair.my_key.id
+vpc_security_group_ids = [aws_security_group.ssh_access.id]
+user_data = <<EOF
+            #!/bin/bash
+            sudo apt update
+            sudo apt-get install nginx -y
+            systemctl enable nginx
+            systemctl start nginx
+            EOF
+            
+}
+
+resource "aws_security_group" "ssh_access"{
+name = "ssh_access"
+description = "Webserver ssh access"
+ingress = {
+from_port = "22"
+to_port = "22"
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0"]
+}
+}
+
+data "aws_key_pair" "my_key"{
+public_key = file("/root/.ssh/my_pub_key.pub")
+}
