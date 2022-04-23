@@ -1,0 +1,53 @@
+Provisioners provide us a way to carry out a task such as running commands or scripts on remote resources or locally on the machine where terraform is installed.
+
+For example: remote_exec provisioner
+provisioner "remote_exec"{
+inline=[
+"sudo apt update", 
+"sudo apt install nginx -y", 
+"sudo systemctl enable nginx", 
+"sudo systemctl start nginx"
+]
+}
+
+connection {
+type = "ssh"
+host = self.public_ip
+user = "ubuntu"
+private_key = file("/root/.ssh/web")
+
+
+}
+provisioned block directly goes into the resource block.For these commands to work there should be network connectivity bw the loacl machine and remote instance.
+for linux : ssh connection
+for win: WINRM
+
+This can be achieved by creating appropriate security group.
+
+-----------------------------------------
+
+Local_exec: to run task in local machine where terraform is installed:
+
+provisioner "local_Exec" {
+command = "echo ${aws_instance.webserver.public_ip} >> /tmp/ips.txt" 
+}
+
+#it will execute when resource are created and called create time provisioner.
+
+**Upon destroing ie destroy time provisioner:
+provisioner "local_Exec" {
+command = "echo Instance  ${aws_instance.webserver.public_ip} created! >> /tmp/instance_state.txt" 
+}
+
+provisioner "local_Exec" {
+when = destroy
+command = "echo Instance ${aws_instance.webserver.public_ip} Destroyed !>> /tmp/instance_state.txt"
+}
+
+
+###By default if provisioner arguments fails, whole terraform command will fail. It can be avoided using on_failure argument:
+
+provisioner "local_Exec" {
+on_failure continue
+command = "echo Instance  ${aws_instance.webserver.public_ip} created! >> /tmp/instance_state.txt" 
+}
