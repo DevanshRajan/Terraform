@@ -29,6 +29,6 @@ content = "my fav pet"
 -----------------------
 Variable precedence
 
-1 Env variable
-2 tfvars
-3 command line(Highest)
+p3 Env variable
+p2 tfvars
+p1 command line(Highest)
